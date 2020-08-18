@@ -1,0 +1,47 @@
+intents:
+  - greet
+  - goodbye
+  - affirm
+  - deny
+  - order_pizza
+  - inform
+  - menu
+
+entities:
+  - pizza_type
+  - pizza_size
+
+slots:
+  pizza_size:
+    type: unfeaturized
+  pizza_type:
+    type: unfeaturized
+
+actions:
+  - show_pizza_types
+
+forms:
+  - order_pizza_form
+
+responses:
+  utter_greet:
+  - text: "Hejka! Co chcesz?"
+
+
+  utter_goodbye:
+  - text: "Papa"
+
+  utter_show_menu:
+  - text: "Już pokazuje ci nasze menu :)"
+
+  utter_ask_pizza_type:
+  - text: "Jaki rodzaj pizzy sobie życzysz?"
+  - text: "Jakie rodzaju pizzę chcesz zamówić?"
+
+  utter_ask_pizza_size:
+    - text: "Jakiej wielkości pizzę chcesz zamówić? (mała, średnia, duża)"
+
+
+session_config:
+  session_expiration_time: 60
+  carry_over_slots_to_new_session: true
