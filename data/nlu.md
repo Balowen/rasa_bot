@@ -47,6 +47,10 @@
 - [wege](pizza_type)
 - [margherita](pizza_type)
 - [hawajska](pizza_type)
+- [dużą](pizza_size:duża)
+- [małą](pizza_size:mała)
+- [średnią](pizza_size:średnia)
+- [największą](pizza_size:duża)
 
 ## intent:order_pizza
 - Poprosze pizze [hawajską](pizza_type:hawajska)
@@ -104,6 +108,7 @@
 - duza
 - duzo
 - najwieksza
+- najwiekszą
 - wielką
 
 ## synonym:średnia

@@ -9,9 +9,7 @@ from sqlalchemy import create_engine, Table
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 
-PIZZA_TYPES = []
 PIZZA_SIZES = ["duża", "średnia", "mała"]
-
 
 Base = declarative_base()
 engine = create_engine("sqlite:///menu_list.db", echo=True)
@@ -25,14 +23,14 @@ Base.metadata.create_all(engine)
 Session = sessionmaker(bind=engine)
 
 
-def _update_menu_from_db():
-    """updates PIZZA_TYPES list with data from db"""
+def _get_menu_from_db() -> List:
+    """get PIZZA_TYPES list from db"""
     session = Session()
     menu = session.query(PizzaList.name).all()
     menu_list = [x[0] for x in menu]
     session.close()
-    global PIZZA_TYPES
-    PIZZA_TYPES = menu_list
+    print(menu_list)
+    return menu_list
 
 
 def _validate_data(pizza_size: Text, pizza_sizes: List,
@@ -56,8 +54,8 @@ class ShowPizzaTypes(Action):
             tracker: Tracker,
             domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
 
-        _update_menu_from_db()
-        dispatcher.utter_message("Mamy nastepujace pizze w menu: \n-" + "\n-".join(PIZZA_TYPES))
+        menu_list = _get_menu_from_db()
+        dispatcher.utter_message("Mamy nastepujace pizze w menu: \n-" + "\n-".join(menu_list))
         return []
 
 
@@ -84,7 +82,8 @@ class PizzaOrderForm(FormAction):
         pizza_size = tracker.get_slot("pizza_size")
         pizza_type = tracker.get_slot("pizza_type")
 
-        results = _validate_data(pizza_size, PIZZA_SIZES, pizza_type, PIZZA_TYPES)
+        pizza_types = _get_menu_from_db()
+        results = _validate_data(pizza_size, PIZZA_SIZES, pizza_type, pizza_types)
         if len(results) == 0:
             dispatcher.utter_message(f"Pizza {results.get('pizza_type')} nie wchodzi w skład naszego menu")
             return []
