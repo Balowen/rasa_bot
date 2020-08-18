@@ -1,21 +1,12 @@
-# This files contains your custom actions which can be used to run
-# custom Python code.
-#
-# See this guide on how to implement these action:
-# https://rasa.com/docs/rasa/core/actions/#custom-actions/
-
-
-# This is a simple example for a custom action which utters "Hello World!"
-
 from typing import Any, Text, Dict, List
 
 from rasa_sdk import Action, Tracker
 from rasa_sdk.forms import FormAction
-from rasa_sdk.events import SlotSet, AllSlotsReset
+from rasa_sdk.events import AllSlotsReset
 from rasa_sdk.executor import CollectingDispatcher
 
 from sqlalchemy import create_engine, Table
-from sqlalchemy.orm import sessionmaker, relationship
+from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 
 PIZZA_TYPES = []
@@ -35,10 +26,10 @@ Session = sessionmaker(bind=engine)
 
 
 def _update_menu_from_db():
+    """updates PIZZA_TYPES list with data from db"""
     session = Session()
     menu = session.query(PizzaList.name).all()
     menu_list = [x[0] for x in menu]
-    # print(formatted_menu)
     session.close()
     global PIZZA_TYPES
     PIZZA_TYPES = menu_list
@@ -94,8 +85,6 @@ class PizzaOrderForm(FormAction):
         pizza_type = tracker.get_slot("pizza_type")
 
         results = _validate_data(pizza_size, PIZZA_SIZES, pizza_type, PIZZA_TYPES)
-        print(results)
-        print(type(results))
         if len(results) == 0:
             dispatcher.utter_message(f"Pizza {results.get('pizza_type')} nie wchodzi w skład naszego menu")
             return []
