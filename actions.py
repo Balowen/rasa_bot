@@ -14,8 +14,34 @@ from rasa_sdk.forms import FormAction
 from rasa_sdk.events import SlotSet, AllSlotsReset
 from rasa_sdk.executor import CollectingDispatcher
 
-PIZZA_TYPES = ["margherita", "wege", "hawajska"]
+from sqlalchemy import create_engine, Table
+from sqlalchemy.orm import sessionmaker, relationship
+from sqlalchemy.ext.declarative import declarative_base
+
+PIZZA_TYPES = []
 PIZZA_SIZES = ["duża", "średnia", "mała"]
+
+
+Base = declarative_base()
+engine = create_engine("sqlite:///menu_list.db", echo=True)
+
+
+class PizzaList(Base):
+    __table__ = Table('pizza_types', Base.metadata, autoload=True, autoload_with=engine)
+
+
+Base.metadata.create_all(engine)
+Session = sessionmaker(bind=engine)
+
+
+def _update_menu_from_db():
+    session = Session()
+    menu = session.query(PizzaList.name).all()
+    menu_list = [x[0] for x in menu]
+    # print(formatted_menu)
+    session.close()
+    global PIZZA_TYPES
+    PIZZA_TYPES = menu_list
 
 
 def _validate_data(pizza_size: Text, pizza_sizes: List,
@@ -38,6 +64,8 @@ class ShowPizzaTypes(Action):
     def run(self, dispatcher: CollectingDispatcher,
             tracker: Tracker,
             domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
+
+        _update_menu_from_db()
         dispatcher.utter_message("Mamy nastepujace pizze w menu: \n-" + "\n-".join(PIZZA_TYPES))
         return []
 
