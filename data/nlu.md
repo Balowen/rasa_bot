@@ -41,86 +41,54 @@
 - zle
 
 ## intent:inform
-- [duża](pizza_size)
-- [średnia](pizza_size)
-- [mała](pizza_size)
-- [wege](pizza_type)
-- [margherita](pizza_type)
-- [hawajska](pizza_type)
-- [dużą](pizza_size:duża)
-- [małą](pizza_size:mała)
-- [średnią](pizza_size:średnia)
-- [największą](pizza_size:duża)
+- [informatyka](study_field:informatyka)
+- [infa](study_field:informatyka)
+- [administracja](study_field:administracja)
+- [pierwszy](study_cycle:pierwszy)
+- [drugi](study_cycle:drugi)
+- [stacjonarne](form_of_study:stacjonarne)
+- [niestacjonarne](form_of_study:niestacjonarne)
 
-## intent:order_pizza
-- Poprosze pizze [hawajską](pizza_type:hawajska)
-- Poprosze pizze [wegetarianską](pizza_type:wege) 
-- Poprosze pizze [margherite](pizza_type:margherita)
-- Chcialbym zamowic pizze [hawajskom](pizza_type:hawajska)
-- Chcialbym zamowic pizze [wege](pizza_type:wege)
-- Chcialbym zamowic pizze [margerite](pizza_type:margherita)
-- Poprosze [dużą](pizza_size:duża) pizze [hawajską](pizza_type:hawajska)
-- Poprosze [średnią](pizza_size:średnia) pizze [wegetarianską](pizza_type:wege) 
-- Poprosze [małą](pizza_size:mała) pizze [margherite](pizza_type:margherita)
-- Chcialbym zamowic pizze [hawajskom](pizza_type:hawajska)
-- Chcialbym zamowic pizze [wege](pizza_type:wege)
-- Chcialbym zamowic pizze [margerite](pizza_type:margherita)
-- Chcialbym zamowic [dużą](pizza_size:duża) pizze [hawajskom](pizza_type:hawajska)
-- Chcialbym zamowic [średniom](pizza_size:średnia) pizze [wege](pizza_type:wege)
-- Chcialbym zamowic [średnią](pizza_size:średnia) pizze [margerite](pizza_type:margherita)
-- Chcialbym zamowic [hawajskom](pizza_type:hawajska)
-- Chcialbym zamowic [wegetarianska](pizza_type:wege)
-- Chcialbym zamowic [magerite](pizza_type:margherita)
-- Chcialbym zamowic [najwieksza](pizza_size:duża) pizze [hawajską](pizza_type:hawajska)
-
-## intent:menu
-- Jakie macie pizze w menu?
-- Jestem głodny
-- Pokaz jakie macie pizze
-- pokaz co macie w menu
-- Pokaz menu
-- jakiego rodzaju pizze macie?
+## intent:show_limit_of_students
+- pokaz mi limit osób
+- jaki jest limit osób na [informatyce](study_field:informatyka)
+- jaki jest limit osób na [infie](study_field:informatyka)
+- jaki jest limit osób na [administracji](study_field:administracja)
+- jaki jest limit osob na [administracji](study_field:administracja)
+- jaki jest limit osób na kierunku [administracja](study_field:administracja)
+- jaki jest limit osób na kierunku [informatyka](study_field:informatyka)
+- pokaz mi limit osób na kierunku [informatyka](study_field:informatyka)
+- pokaz mi limit osób na [administracji](study_field:administracja)
 
 
-## synonym:margherita
-- margerita
-- margerite
-- magerite
-- margherite
-- magherite
 
-## synonym:wege
-- wegetariańską
-- wegetarianska
-- wegeta
-- wegańską
+## intent:fields_of_study
+- Jakie macie kierunki?
+- Jakie macie dostępne kierunki
+- Pokaz jakie macie kierunki do studiowania
+- pokaz liste kierunków
+- pokaz mi liste kierunkow
+- Jakie kierunki studiow macie?
+- Jakie kierunki studiów macie?
 
-## synonym:hawajska
-- hawajską
-- hawajskom
-- hawajskąm
 
-## synonym:duża
-- dużą
-- dużom
-- durzą
-- durzom
-- duza
-- duzo
-- najwieksza
-- najwiekszą
-- wielką
+## synonym:informatyka
+- infa
+- informatykę
+- informatyke
+- informatyką
+- informatyki
+- infie
+- infy
 
-## synonym:średnia
-- średnią
-- srednia
-- sredniom
-- średniom
+## synonym:administracja
+- administracji
+- administrację
+- administracje
 
-## synonym:mała
-- małą
-- mala
-- małom
-- malutką
-- najmniejszą
-- najmniejsza
+## synonym:stacjonarne
+- stacjonarnie
+
+## synonym:niestacjonarne
+- niestacjonarnie
+

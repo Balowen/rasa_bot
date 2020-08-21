@@ -3,30 +3,33 @@ intents:
   - goodbye
   - affirm
   - deny
-  - order_pizza
+  - show_limit_of_students
   - inform
-  - menu
+  - fields_of_study
 
 entities:
-  - pizza_type
-  - pizza_size
+  - study_field
+  - study_cycle
+  - form_of_study
 
 slots:
-  pizza_size:
+  study_field:
     type: unfeaturized
-  pizza_type:
+  study_cycle:
+    type: unfeaturized
+  form_of_study:
     type: unfeaturized
 
 actions:
-  - show_pizza_types
+  - show_study_fields
+  - find_study_cycles
 
 forms:
-  - order_pizza_form
+  - students_limit_form
 
 responses:
   utter_greet:
   - text: "Hejka! Co chcesz?"
-
 
   utter_goodbye:
   - text: "Papa"
@@ -34,12 +37,16 @@ responses:
   utter_show_menu:
   - text: "Już pokazuje ci nasze menu :)"
 
-  utter_ask_pizza_type:
-  - text: "Jaki rodzaj pizzy sobie życzysz?"
-  - text: "Jakie rodzaju pizzę chcesz zamówić?"
+  utter_ask_study_field:
+  - text: "Jaki kierunek studiow ciebie interesuje?"
+  - text: "Na jaki kierunek chcialbys sprawdzic limit?"
 
-  utter_ask_pizza_size:
-    - text: "Jakiej wielkości pizzę chcesz zamówić? (mała, średnia, duża)"
+  utter_ask_study_cycle:
+    - text: "Wybierz jeden z poniższych stopni studiow (pierwszy, drugi)"
+
+  utter_ask_form_of_study:
+    - text: "Jaka forma studiów? (stacjonarne, niestacjonarne)"
+
 
 
 session_config:

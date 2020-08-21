@@ -3,3 +3,4 @@
 /.idea/.gitignore
 /models/
 /.idea/
+*.db
