@@ -1,4 +1,4 @@
-from typing import Any, Text, Dict, List, Optional, Tuple
+from typing import Any, Text, Dict, List, Optional, Tuple, Union
 
 from rasa_sdk import Action, Tracker
 from rasa_sdk.forms import FormAction, REQUESTED_SLOT, logger
@@ -8,8 +8,6 @@ from rasa_sdk.executor import CollectingDispatcher
 from sqlalchemy import create_engine, Table
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
-
-# PIZZA_SIZES = ["duża", "średnia", "mała"]
 
 Base = declarative_base()
 engine = create_engine("sqlite:///study_fields.db", echo=True)
@@ -33,6 +31,24 @@ def _get_study_fields_names() -> List:
     return study_fields_list
 
 
+def _get_limit_of_students(study_field, study_cycle, form_of_study) -> int:
+    session = Session()
+    limit_of_students = session.query(StudyFields.limit_of_students).filter_by(name=study_field,
+                                                                               cycle=study_cycle,
+                                                                               form_of_study=form_of_study
+                                                                               ).first()
+    return limit_of_students[0]
+
+
+def _get_possible_study_forms(study_field_name: Text, study_cycle: Text) -> List:
+    session = Session()
+    study_forms_tuples = session.query(StudyFields.form_of_study).filter_by(name=study_field_name,
+                                                                            cycle=study_cycle).distinct()
+    study_forms_list = [x[0] for x in study_forms_tuples]
+    session.close()
+    return study_forms_list
+
+
 def _get_study_cycles(study_field_name: Text) -> List:
     """get cycles of study for specific field of study"""
     session = Session()
@@ -40,17 +56,6 @@ def _get_study_cycles(study_field_name: Text) -> List:
     study_cycles_list = [x[0] for x in study_cycles_tuples]
     session.close()
     return study_cycles_list
-
-
-def _get_limit_of_students(study_field, study_cycle, form_of_study) -> int:
-    session = Session()
-    limit_of_students = session.query(StudyFields.limit_of_students).filter_by(name=study_field,
-                                                                               cycle=study_cycle,
-                                                                               form_of_study=form_of_study
-                                                                               ).first()
-    print("limit of students type: ")
-    type(limit_of_students)
-    return limit_of_students[0]
 
 
 def _get_study_cycles_buttons(study_field_name: Text) -> Tuple[List, List]:
@@ -91,7 +96,20 @@ class ShowStudentsLimitForm(FormAction):
     def required_slots(tracker: "Tracker") -> List[Text]:
         """A list of required slots the form has to fill"""
 
-        return ["study_field", "study_cycle", "form_of_study"]
+        required_slot = ["study_field", "study_cycle", "form_of_study"]
+        return required_slot
+
+    def slot_mappings(self) -> Dict[Text, Union[Dict, List[Dict[Text, Any]]]]:
+
+        return {"study_field": self.from_entity(entity="study_field",
+                                                intent=["inform",
+                                                        "show_limit_of_students"]),
+                "study_cycle": self.from_entity(entity="study_cycle",
+                                                intent=["inform",
+                                                        "show_limit_of_students"]),
+                "form_of_study": self.from_entity(entity="form_of_study",
+                                                  intent=["inform",
+                                                          "show_limit_of_students"])}
 
     def request_next_slot(
             self,
@@ -104,22 +122,35 @@ class ShowStudentsLimitForm(FormAction):
                 if slot == "study_cycle":
                     study_field = tracker.get_slot("study_field")
                     buttons_list, cycles_values_list = _get_study_cycles_buttons(study_field)
-                    if len(cycles_values_list) > 1:
+                    if len(cycles_values_list) == 1:
+                        cycle = cycles_values_list[0]
+
+                        dispatcher.utter_message(f"Jedyny możliwy stopień studiów to: stopień {cycle} "
+                                                 f"(wybrano automatycznie)")
+                        return [SlotSet("study_cycle", cycle)]
+                    else:
                         dispatcher.utter_button_message(text="Wybierz stopień studiów:", buttons=buttons_list)
                         return [SlotSet("study_cycle", slot)]
-                    elif len(cycles_values_list) == 1:
-                        return [SlotSet("study_cycle", cycles_values_list[0])]
+                elif slot == "form_of_study":
+                    study_field = tracker.get_slot("study_field")
+                    study_cycle = tracker.get_slot("study_cycle")
+                    # Ask for form of study or auto_fill it if there is only one option
+                    forms_of_study = _get_possible_study_forms(study_field, study_cycle)
+                    print(len(forms_of_study))
+                    if len(forms_of_study) == 1:
+                        return [SlotSet("form_of_study", forms_of_study[0])]
+                    else:
+                        dispatcher.utter_message(template="utter_ask_form_of_study")
+                        return [SlotSet("form_of_study", slot)]
+                else:
+                    # For all other slots, continue as usual
+                    print(slot)
+                    logger.debug(f"Request next slot '{slot}'")
+                    dispatcher.utter_message(
+                        template=f"utter_ask_{slot}", **tracker.slots
+                    )
+                    return [SlotSet(REQUESTED_SLOT, slot)]
 
-                if slot == "form_of_study":
-                    dispatcher.utter_message(template="utter_ask_form_of_study")
-                    return [SlotSet("form_of_study", slot)]
-
-                # For all other slots, continue as usual
-                logger.debug(f"Request next slot '{slot}'")
-                dispatcher.utter_message(
-                    template=f"utter_ask_{slot}", **tracker.slots
-                )
-                return [SlotSet(REQUESTED_SLOT, slot)]
         return None
 
     def submit(

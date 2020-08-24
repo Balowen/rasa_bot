@@ -84,6 +84,7 @@
 ## synonym:administracja
 - administracji
 - administrację
+
 - administracje
 
 ## synonym:stacjonarne
