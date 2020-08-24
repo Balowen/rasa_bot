@@ -19,10 +19,13 @@ slots:
     type: unfeaturized
   form_of_study:
     type: unfeaturized
+  category_parent_id:
+    type: unfeaturized
+    initial_value: 1
 
 actions:
   - show_study_fields
-  - find_study_cycles
+  - show_categories
 
 forms:
   - students_limit_form

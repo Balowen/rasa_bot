@@ -1,6 +1,7 @@
 ## happy path
 * greet
   - utter_greet
+  - show_categories
 * fields_of_study
   - show_study_fields  
 * show_limit_of_students{"study_field":"informatyka"}

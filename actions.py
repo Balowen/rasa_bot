@@ -5,20 +5,38 @@ from rasa_sdk.forms import FormAction, REQUESTED_SLOT, logger
 from rasa_sdk.events import AllSlotsReset, EventType, SlotSet
 from rasa_sdk.executor import CollectingDispatcher
 
-from sqlalchemy import create_engine, Table
-from sqlalchemy.orm import sessionmaker
-from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy import create_engine, Column, ForeignKey
+from sqlalchemy.orm.collections import attribute_mapped_collection
+from sqlalchemy.types import Integer, TEXT
+from sqlalchemy.orm import sessionmaker, relationship, backref
+from sqlalchemy.ext.automap import automap_base
 
-Base = declarative_base()
 engine = create_engine("sqlite:///study_fields.db", echo=True)
 
-
-class StudyFields(Base):
-    __table__ = Table('study_fields', Base.metadata, autoload=True, autoload_with=engine)
-
-
-Base.metadata.create_all(engine)
+Base = automap_base()
 Session = sessionmaker(bind=engine)
+
+
+class Category(Base):
+    __tablename__ = 'categories'
+
+    id = Column(Integer, primary_key=True)
+    parent_id = Column(Integer, ForeignKey('categories.id'))
+    data = Column(TEXT())
+    children = relationship('Category',
+                            backref=backref('parent', remote_side=[id]))
+
+    def __repr__(self):
+        return "TreeNode(data=%r, id=%r, parent_id=%r)" % (
+            self.data,
+            self.id,
+            self.parent_id
+        )
+
+
+Base.prepare(engine, reflect=True)
+
+StudyFields = Base.classes.study_fields
 
 
 def _get_study_fields_names() -> List:
@@ -71,6 +89,27 @@ def _get_study_cycles_buttons(study_field_name: Text) -> Tuple[List, List]:
     return buttons, study_cycles_list
 
 
+class ShowCategories(Action):
+    """This action retrieves categories from db and displays them as buttons
+        when user chooses endnode category, it returns appropriate utter_temple response"""
+    def name(self) -> Text:
+        return "show_categories"
+
+    def run(
+        self, dispatcher, tracker: Tracker, domain: Dict[Text, Any]
+    ) -> List[Dict[Text, Any]]:
+        # categories
+        current_category_level = tracker.get_slot("category_parent_id")
+        session = Session()
+        categories = session.query(Category).filter(Category.parent_id == current_category_level).all()
+        session.close()
+
+        # TODO add button list and update it according to current_category_level slot
+        for category in categories:
+            print(category.data)
+        return []
+
+
 class ShowFieldsOfStudies(Action):
     """This action retrieves pizza types (later from the db) and displays
     it to the user"""
@@ -81,8 +120,10 @@ class ShowFieldsOfStudies(Action):
     def run(self, dispatcher: CollectingDispatcher,
             tracker: Tracker,
             domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
+
         study_fields = _get_study_fields_names()
         dispatcher.utter_message("Lista kierunków do wyboru: \n-" + "\n-".join(study_fields))
+
         return []
 
 
