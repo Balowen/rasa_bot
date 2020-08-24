@@ -1,23 +1,13 @@
 ## happy path
 * greet
   - utter_greet
-* menu
-  - show_pizza_types
-* inform{"pizza_type":"hawajska"}
-  - order_pizza_form
-  - form{"name":"order_pizza_form"}
-  - form{"name":null}
-* goodbye
- - utter_goodbye
-
-## happy path 2
-* order_pizza{"pizza_type":"wege", "pizza_size":"średnia"}
-  - order_pizza_form
-  - form{"name":"order_pizza_form"}
-  - form{"name":null}
-* goodbye
- - utter_goodbye
- 
+  - show_categories
+* fields_of_study
+  - show_study_fields  
+* show_limit_of_students{"study_field":"informatyka"}
+  - students_limit_form
+  - form{"name": "student_limit_form"}
+  - form{"name": null}
 ## say goodbye
 * goodbye
   - utter_goodbye
