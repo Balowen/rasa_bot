@@ -6,10 +6,39 @@ from rasa_sdk.events import AllSlotsReset, EventType, SlotSet
 from rasa_sdk.executor import CollectingDispatcher
 
 from sqlalchemy import create_engine, Column, ForeignKey
-from sqlalchemy.orm.collections import attribute_mapped_collection
 from sqlalchemy.types import Integer, TEXT
 from sqlalchemy.orm import sessionmaker, relationship, backref
 from sqlalchemy.ext.automap import automap_base
+
+RESPONSES = {
+    "Limity przyjęć": {
+        "utter_response": "utter_student_limits"
+    },
+    "Lista kierunków": {
+        "utter_response": "utter_study_fields"
+    },
+    "Wolne miejsca": {
+        "utter_response": "utter_free_positions"
+    },
+    "Opłata rekrutacyjna": {
+        "utter_response": "utter_recruitment_fee"
+    },
+    "Opłata za studia": {
+        "utter_response": "utter_tuition_fee"
+    },
+    "Zwrot opłat": {
+        "utter_response": "utter_refund"
+    },
+    "Rozpoczęcie rekrutacji": {
+        "utter_response": "utter_date_of_recruitment"
+    },
+    "Druga tura": {
+        "utter_response": "utter_second_round"
+    },
+    "Dostarczenie dokumentów": {
+        "utter_response": "utter_documents"
+    }
+}
 
 engine = create_engine("sqlite:///study_fields.db", echo=True)
 
@@ -89,25 +118,46 @@ def _get_study_cycles_buttons(study_field_name: Text) -> Tuple[List, List]:
     return buttons, study_cycles_list
 
 
+def _choose_utter_response(category_name: Text) -> Text:
+    for key, value in RESPONSES.items():
+        if key == category_name:
+            return value.get("utter_response")
+    return "utter_out_of_scope"
+
+
 class ShowCategories(Action):
     """This action retrieves categories from db and displays them as buttons
         when user chooses endnode category, it returns appropriate utter_temple response"""
+
     def name(self) -> Text:
         return "show_categories"
 
     def run(
-        self, dispatcher, tracker: Tracker, domain: Dict[Text, Any]
+            self, dispatcher, tracker: Tracker, domain: Dict[Text, Any]
     ) -> List[Dict[Text, Any]]:
         # categories
-        current_category_level = tracker.get_slot("category_parent_id")
+        current_category_parent_id = tracker.get_slot("category_parent_id")
         session = Session()
-        categories = session.query(Category).filter(Category.parent_id == current_category_level).all()
+        categories = session.query(Category).filter(Category.parent_id == current_category_parent_id).all()
         session.close()
+        buttons = []
+        if len(categories):
+            for category in categories:
+                title = category.data
+                payload = "/choose_category_level{\"category_parent_id\": \"" + str(category.id) + "\"}"
+                buttons.append(
+                    {"title": f"{title}",
+                     "payload": payload
+                     }
+                )
+            dispatcher.utter_button_message(text="Wybierz interesującą ciebie kategorię:", buttons=buttons)
+        else:
+            current_category = session.query(Category).filter_by(id=current_category_parent_id).first()
+            utter = _choose_utter_response(current_category.data)
+            dispatcher.utter_message(template=utter)
 
-        # TODO add button list and update it according to current_category_level slot
-        for category in categories:
-            print(category.data)
-        return []
+            # reseting category level to 1 (root of the tree)
+        return [AllSlotsReset()]
 
 
 class ShowFieldsOfStudies(Action):
@@ -120,7 +170,6 @@ class ShowFieldsOfStudies(Action):
     def run(self, dispatcher: CollectingDispatcher,
             tracker: Tracker,
             domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
-
         study_fields = _get_study_fields_names()
         dispatcher.utter_message("Lista kierunków do wyboru: \n-" + "\n-".join(study_fields))
 

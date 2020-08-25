@@ -49,6 +49,13 @@
 - [stacjonarne](form_of_study:stacjonarne)
 - [niestacjonarne](form_of_study:niestacjonarne)
 
+## intent:choose_category_level
+- [1](category_parent_id)
+- [8](category_parent_id)
+
+## regex:category_parent_id
+- [0-9]{1,2}
+
 ## intent:show_limit_of_students
 - pokaz mi limit osób
 - jaki jest limit osób na [informatyce](study_field:informatyka)
@@ -70,6 +77,45 @@
 - pokaz mi liste kierunkow
 - Jakie kierunki studiow macie?
 - Jakie kierunki studiów macie?
+
+## intent:out_of_scope
+- prosze pomóż mi
+- pomoz mi
+- potrzebuje pomocy
+- co?
+- chcialbym kupic lody truskawkowe ale sie rozpuszczają 
+- zaczekaj, wróć chce zjesc lody w rożku
+- niech ktos zadzwoni po policje
+- pokaz mi smieszne zdjecie
+- pokaz jakiegos mema
+- pokaz memy
+- glodny jestem
+- nie obchodzi mnie to
+- co mnie to
+- mozesz powtorzyc?
+- stop
+- zastopuj to
+- nie chce juz
+- prosze zakończ
+- zakoncz
+- anuluj
+- chcialbym od nowa
+- chcialbym to anulowac
+- bot umarł
+- czy ja ciebie zepsulem
+- to nie dziala
+- nie o to mi chodzilo
+- mów do mnie
+- czy mozesz mi pomoc
+- czy możesz mi pomóc
+- czy mógłbyś mi pomóc proszę?
+- wróć
+- pokaz mi kategorie od nowa
+- wróć do menu
+- pokaz glowne menu
+- zatrzymaj
+- reset
+- prosze zresetuj to
 
 
 ## synonym:informatyka
