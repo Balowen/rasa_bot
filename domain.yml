@@ -1,67 +1,80 @@
-intents:
-  - greet
-  - goodbye
-  - affirm
-  - deny
-  - show_limit_of_students
-  - inform
-  - fields_of_study
-  - choose_category_level
-  - out_of_scope
-
-entities:
-  - study_field
-  - study_cycle
-  - form_of_study
-  - category_parent_id
-
-slots:
-  study_field:
-    type: unfeaturized
-  study_cycle:
-    type: unfeaturized
-  form_of_study:
-    type: unfeaturized
-  category_parent_id:
-    type: unfeaturized
-    initial_value: 1
-
-actions:
-  - show_study_fields
-  - show_categories
-
-forms:
-  - students_limit_form
-
-responses:
-  utter_greet:
-  - text: "Hejka! Jestem asystentem kandydata w rekrutacji na studia. W czym mogę pomóc?"
-
-  utter_goodbye:
-  - text: "Papa"
-
-  utter_show_menu:
-  - text: "Już pokazuje ci nasze menu :)"
-
-  utter_out_of_scope:
-  - text: "Wybacz, nie zrozumiałem. Sformułuj pytanie inaczej lub wybierz kategorię."
-
-  utter_ask_study_field:
-  - text: "Jaki kierunek studiow ciebie interesuje?"
-  - text: "Na jaki kierunek chcialbys sprawdzic limit?"
-
-  utter_ask_study_cycle:
-    - text: "Wybierz jeden z poniższych stopni studiow (pierwszy, drugi)"
-
-  utter_ask_form_of_study:
-    - text: "Jaka forma studiów?"
-      buttons:
-        - title: "stacjonarne"
-          payload: '/inform{"form_of_study": "stacjonarne"}'
-        - title: "niestacjonarne"
-          payload: '/inform{"form_of_study": "niestacjonarne"}'
-
-
 session_config:
   session_expiration_time: 60
   carry_over_slots_to_new_session: true
+intents:
+- greet
+- goodbye
+- affirm
+- deny
+- show_limit_of_students
+- inform
+- fields_of_study
+- choose_category_level
+- out_of_scope
+entities:
+- study_field
+- study_cycle
+- form_of_study
+- category_parent_id
+slots:
+  category_parent_id:
+    type: unfeaturized
+    initial_value: 1
+  form_of_study:
+    type: unfeaturized
+  study_cycle:
+    type: unfeaturized
+  study_field:
+    type: unfeaturized
+responses:
+  utter_greet:
+  - text: Hejka! Jestem asystentem kandydata w rekrutacji na studia. W czym mogę pomóc?
+  utter_goodbye:
+  - text: Papa
+  utter_show_menu:
+  - text: Już pokazuje ci nasze menu :)
+  utter_out_of_scope:
+  - text: Wybacz, nie zrozumiałem. Sformułuj pytanie inaczej lub wybierz kategorię.
+  utter_student_limits:
+  - buttons:
+    - payload: /show_limit_of_students{"study_field":"informatyka"}
+      title: Pokaż limit studentów na informatykę
+    text: Mogę pokazać Ci limit studentów na konkretny kierunek
+  utter_study_fields:
+  - buttons:
+    - payload: /fields_of_study
+      title: Pokaż listę kierunków
+    text: Możesz zapytać o listę kierunków, np. 'Pokaż liste kierunków' :)
+  utter_free_positions:
+  - text: Wolne miejsca na dany kierunek możesz sprawdzić pod adresem www.uczelnia.pl/wolnemiejsca
+  utter_recruitment_fee:
+  - text: Opłata rekrutacyjna wynosi 50zł.
+  utter_tuition_fee:
+  - text: Opłaty za studia (czesne) możesz sprawdzić tutaj www.uczelnia.pl/czesne
+  utter_refund:
+  - text: Informacje o zwrocie opłat znajdziesz na www.uczelnia.pl/zwroty
+  utter_date_of_recruitment:
+  - text: Rekrutacja zaczyna się 5 września. Więcej informacji na www.uczelnia.pl/rekrutacja
+  utter_second_round:
+  - text: Ewentualna druga tura odbędzie się 10 września. Więcej informacji na www.uczelnia.pl/rekrutacja
+  utter_documents:
+  - text: "W procesie rekrutacji wymagamy:\n  - podania o przyjęcie na studia\n  -\
+      \ kopia świadectwa\n  - zaświadczenie lekarskie\n\nWięcej informacji znajdziesz\
+      \ na www.uczelnia.pl/rekrutacja/dokumenty\"\n"
+  utter_ask_study_field:
+  - text: Jaki kierunek studiow ciebie interesuje?
+  - text: Na jaki kierunek chcialbys sprawdzic limit?
+  utter_ask_study_cycle:
+  - text: Wybierz jeden z poniższych stopni studiow (pierwszy, drugi)
+  utter_ask_form_of_study:
+  - buttons:
+    - payload: '/inform{"form_of_study": "stacjonarne"}'
+      title: stacjonarne
+    - payload: '/inform{"form_of_study": "niestacjonarne"}'
+      title: niestacjonarne
+    text: Jaka forma studiów?
+actions:
+- show_study_fields
+- show_categories
+forms:
+- students_limit_form
