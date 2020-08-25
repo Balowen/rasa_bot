@@ -10,7 +10,12 @@
   - students_limit_form
   - form{"name": "student_limit_form"}
   - form{"name": null}
+  
 ## say goodbye
 * goodbye
   - utter_goodbye
 
+## out_of_scope
+* out_of_scope
+  - utter_out_of_scope
+  - show_categories

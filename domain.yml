@@ -7,6 +7,7 @@ intents:
   - inform
   - fields_of_study
   - choose_category_level
+  - out_of_scope
 
 entities:
   - study_field
@@ -34,13 +35,16 @@ forms:
 
 responses:
   utter_greet:
-  - text: "Hejka! Co chcesz?"
+  - text: "Hejka! Jestem asystentem kandydata w rekrutacji na studia. W czym mogę pomóc?"
 
   utter_goodbye:
   - text: "Papa"
 
   utter_show_menu:
   - text: "Już pokazuje ci nasze menu :)"
+
+  utter_out_of_scope:
+  - text: "Wybacz, nie zrozumiałem. Sformułuj pytanie inaczej lub wybierz kategorię."
 
   utter_ask_study_field:
   - text: "Jaki kierunek studiow ciebie interesuje?"
@@ -50,8 +54,12 @@ responses:
     - text: "Wybierz jeden z poniższych stopni studiow (pierwszy, drugi)"
 
   utter_ask_form_of_study:
-    - text: "Jaka forma studiów? (stacjonarne, niestacjonarne)"
-
+    - text: "Jaka forma studiów?"
+      buttons:
+        - title: "stacjonarne"
+          payload: '/inform{"form_of_study": "stacjonarne"}'
+        - title: "niestacjonarne"
+          payload: '/inform{"form_of_study": "niestacjonarne"}'
 
 
 session_config:

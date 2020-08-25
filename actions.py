@@ -122,7 +122,8 @@ class ShowCategories(Action):
         else:
             dispatcher.utter_message(f"current category id is {current_category_level}")
             dispatcher.utter_message(text="Wyświetlam utter_message odpowiedniej kategorii")
-        return []
+            # reseting category level to 1 (root of the tree)
+        return [AllSlotsReset()]
 
 
 class ShowFieldsOfStudies(Action):
