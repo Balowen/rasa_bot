@@ -11,6 +11,7 @@ from sqlalchemy.types import Integer, TEXT
 from sqlalchemy.orm import sessionmaker, relationship, backref
 from sqlalchemy.ext.automap import automap_base
 
+
 engine = create_engine("sqlite:///study_fields.db", echo=True)
 
 Base = automap_base()
@@ -92,21 +93,35 @@ def _get_study_cycles_buttons(study_field_name: Text) -> Tuple[List, List]:
 class ShowCategories(Action):
     """This action retrieves categories from db and displays them as buttons
         when user chooses endnode category, it returns appropriate utter_temple response"""
+
     def name(self) -> Text:
         return "show_categories"
 
     def run(
-        self, dispatcher, tracker: Tracker, domain: Dict[Text, Any]
+            self, dispatcher, tracker: Tracker, domain: Dict[Text, Any]
     ) -> List[Dict[Text, Any]]:
         # categories
         current_category_level = tracker.get_slot("category_parent_id")
         session = Session()
         categories = session.query(Category).filter(Category.parent_id == current_category_level).all()
         session.close()
-
+        buttons = []
+        print("categories length: ", len(categories))
+        print("categories type: ", type(categories))
         # TODO add button list and update it according to current_category_level slot
-        for category in categories:
-            print(category.data)
+        if len(categories):
+            for category in categories:
+                title = category.data
+                payload = "/choose_category_level{\"category_parent_id\": \"" + str(category.id) + "\"}"
+                buttons.append(
+                    {"title": f"{title}",
+                     "payload": payload
+                     }
+                )
+            dispatcher.utter_button_message(text="Wybierz interesującą ciebie kategorię:", buttons=buttons)
+        else:
+            dispatcher.utter_message(f"current category id is {current_category_level}")
+            dispatcher.utter_message(text="Wyświetlam utter_message odpowiedniej kategorii")
         return []
 
 
@@ -120,7 +135,6 @@ class ShowFieldsOfStudies(Action):
     def run(self, dispatcher: CollectingDispatcher,
             tracker: Tracker,
             domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
-
         study_fields = _get_study_fields_names()
         dispatcher.utter_message("Lista kierunków do wyboru: \n-" + "\n-".join(study_fields))
 

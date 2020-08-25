@@ -49,6 +49,13 @@
 - [stacjonarne](form_of_study:stacjonarne)
 - [niestacjonarne](form_of_study:niestacjonarne)
 
+## intent:choose_category_level
+- [1](category_parent_id)
+- [8](category_parent_id)
+
+## regex:category_parent_id
+- [0-9]{1,2}
+
 ## intent:show_limit_of_students
 - pokaz mi limit osób
 - jaki jest limit osób na [informatyce](study_field:informatyka)

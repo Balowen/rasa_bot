@@ -6,11 +6,13 @@ intents:
   - show_limit_of_students
   - inform
   - fields_of_study
+  - choose_category_level
 
 entities:
   - study_field
   - study_cycle
   - form_of_study
+  - category_parent_id
 
 slots:
   study_field:
