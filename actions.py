@@ -161,8 +161,7 @@ class ShowCategories(Action):
 
 
 class ShowFieldsOfStudies(Action):
-    """This action retrieves pizza types (later from the db) and displays
-    it to the user"""
+    """This action retrieves all fields of studies and displays a list of them"""
 
     def name(self) -> Text:
         return "show_study_fields"
@@ -177,7 +176,7 @@ class ShowFieldsOfStudies(Action):
 
 
 class ShowStudentsLimitForm(FormAction):
-    """Form action to fill all slots required to show limits of students"""
+    """Form action to fill all slots required to show limits of students for specific field"""
 
     def name(self) -> Text:
         return "students_limit_form"
